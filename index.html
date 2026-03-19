@@ -106,7 +106,7 @@ a:hover { text-decoration: underline; }
   <div class="legend-row">
     <span class="legend-term">Trend</span>
     <span class="legend-def">Тренд выручки за последний месяц относительно среднего за весь период. <span class="trend-growing">GROWING</span> &gt;1.2 · <span class="trend-stable">STABLE</span> 0.8–1.2 · <span class="trend-declining">DECLINING</span> &lt;0.8
-      <details><summary>как считается</summary><div>Берём revenue за 30 дней и сравниваем со средней месячной выручкой (12mo / 12). Если 30d заметно выше среднего, приложение растёт. Если ниже — замедляется. Молодые приложения (&lt;6 мес) почти всегда GROWING, т.к. у них мало исторических данных и первые месяцы обычно слабые. Это нормально, не баг.</div></details>
+      <details><summary>как считается</summary><div>Берём revenue за 30 дней и сравниваем со средней месячной выручкой (12mo / 12). Если 30d заметно выше среднего, приложение растёт. Если ниже — замедляется. Молодые приложения (&lt;6 мес) почти всегда GROWING, т.к. у них мало исторических данных и первые месяцы обычно слабые. Это нормально, не баг. Окно 30 дней не учитывает сезонность: пограничные GROWING/STABLE могут быть неточными.</div></details>
     </span>
   </div>
   <div class="legend-row">
