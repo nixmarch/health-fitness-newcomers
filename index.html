@@ -53,6 +53,30 @@ a:hover { text-decoration: underline; }
 .mom-mid { color: #94a3b8; }
 .mom-low { color: #f59e0b; font-weight: 600; }
 .mom-bad { color: #ef4444; font-weight: 600; }
+/* Legend grid */
+.legend-grid { display: flex; flex-direction: column; gap: 4px; }
+.legend-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid rgba(15,23,42,0.5); }
+.legend-row:last-child { border-bottom: none; }
+.legend-term { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; font-weight: 700; color: #60a5fa; background: #0f172a; padding: 2px 8px; border-radius: 4px; text-align: center; }
+.legend-def { font-size: 0.82rem; color: #cbd5e1; line-height: 1.5; }
+.legend-def details { margin-top: 6px; }
+.legend-def details summary { color: #475569; font-size: 0.75rem; cursor: pointer; user-select: none; }
+.legend-def details summary:hover { color: #94a3b8; }
+.legend-def details[open] > div { color: #94a3b8; font-size: 0.8rem; line-height: 1.6; margin-top: 4px; }
+/* Publisher type cards */
+.type-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 8px; }
+.type-card { background: #0f172a; border-radius: 6px; padding: 10px 14px; }
+.type-card-header { margin-bottom: 6px; }
+.type-card p { font-size: 0.8rem; color: #94a3b8; line-height: 1.5; margin: 0; }
+.type-tag { font-size: 0.68rem; font-weight: 600; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.type-tag-yes { background: rgba(34,197,94,0.15); color: #22c55e; }
+.type-tag-no { background: rgba(239,68,68,0.15); color: #ef4444; }
+.type-tag-neutral { background: rgba(148,163,184,0.15); color: #94a3b8; }
+.type-tag-filter { background: rgba(249,115,22,0.15); color: #fb923c; }
+/* Legend panel toggle */
+#legend-panel > summary { list-style: none; cursor: pointer; color: #60a5fa; font-weight: 600; font-size: 0.9rem; padding: 2px 0 10px; user-select: none; }
+#legend-panel > summary::-webkit-details-marker { display: none; }
+#legend-panel > summary:hover { color: #93c5fd; }
 </style>
 </head>
 <body>
@@ -63,30 +87,97 @@ a:hover { text-decoration: underline; }
 </div>
 
 
+<details id="legend-panel" open>
+<summary>▾ Легенда колонок и типы паблишеров</summary>
+
 <div style="background: #1e293b; border-radius: 8px; padding: 14px 20px; margin-bottom: 16px; border-left: 3px solid #3b82f6;">
 <div style="color: #60a5fa; font-weight: 600; font-size: 0.9rem; margin-bottom: 12px;">Легенда колонок</div>
-<div style="font-size: 0.82rem; color: #94a3b8; line-height: 1.8; columns: 2; column-gap: 32px;">
-<p><strong style="color: #e2e8f0;">Age</strong> — месяцев с первого релиза в App Store</p>
-<p><strong style="color: #e2e8f0;">Revenue 12mo / 30d</strong> — оценка выручки от Sensor Tower (только iOS). Точность ±20% для топ-приложений, выше погрешность для мелких</p>
-<p><strong style="color: #e2e8f0;">Trend</strong> — тренд выручки за последний месяц относительно среднего за весь период. Логика: берём revenue за 30 дней и сравниваем со средней месячной выручкой (12mo / 12). Если 30d заметно выше среднего, приложение растёт. Если ниже — замедляется. Пороги: <span style="color: #22c55e;">GROWING</span> (отношение &gt;1.2), <span style="color: #f59e0b;">STABLE</span> (0.8–1.2), <span style="color: #ef4444;">DECLINING</span> (&lt;0.8). Почему именно так: молодые приложения (&lt;6 мес) почти всегда GROWING, т.к. у них мало исторических данных и первые месяцы обычно слабые. Это нормально, не баг.</p>
-<p><strong style="color: #e2e8f0;">Accel. (Acceleration)</strong> — то же отношение, но числом. Формула: <code style="color: #60a5fa;">30d_rev / (12mo_rev / 12)</code>. Пример: приложение заработало $120K за год (= $10K/мес в среднем) и $25K за последний месяц. Accel = 25/10 = 2.5, т.е. последний месяц в 2.5 раза сильнее среднего. Шкала: &gt;1.5 = ускоряется, ~1.0 = стабильно, &lt;1.0 = теряет. Accel 0.5 значит выручка упала вдвое от средней.</p>
-<p><strong style="color: #e2e8f0;">Source</strong> — канал роста*: APP = органика App Store / ASO, CONTENT = YouTube/соцсети/блог приводят установки, HYBRID = оба канала. <span style="color: #64748b;">*Классификация на основе данных Sensor Tower + ручной анализ</span></p>
-<p><strong style="color: #e2e8f0;">Mon. (Monetization)</strong> — модель монетизации: SUB = подписка, FREE = нет IAP в App Store (скорее всего web paywall, Stripe или B2B), SUB+ADS = подписка + реклама, ADS = только реклама</p>
-<p><strong style="color: #e2e8f0;">RPD</strong> — Revenue Per Download. Показывает, сколько приложение зарабатывает на одну установку. RPD $50+ — скорее всего web paywall, Stripe checkout или аномалия данных ST</p>
-<p><strong style="color: #e2e8f0;">DAU</strong> — Daily Active Users. «—» = данные недоступны. Sensor Tower отдаёт DAU только для ~30% приложений, поэтому пустые значения — норма, не баг</p>
-<p><strong style="color: #e2e8f0;">Country</strong> — рынок #1 по выручке*. Показывает, откуда приходят основные платящие пользователи. По ссылке на Sensor Tower можно увидеть топ-3 стран. <span style="color: #64748b;">*Данные Sensor Tower</span></p>
-<p><strong style="color: #e2e8f0;">Pub. Country</strong> — страна регистрации паблишера. Часто налоговая юрисдикция (Кипр, Ирландия), а не реальное местоположение команды</p>
+<div class="legend-grid">
+  <div class="legend-row">
+    <span class="legend-term">Age</span>
+    <span class="legend-def">Месяцев с первого релиза в App Store</span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">Revenue 12mo / 30d</span>
+    <span class="legend-def">Оценка выручки от Sensor Tower (только iOS). Точность ±20% для топ-приложений
+      <details><summary>погрешность</summary><div>Выше погрешность для мелких приложений — данных меньше, модель менее уверена. Для приложений с выручкой ниже $100K/год погрешность может достигать 50%+.</div></details>
+    </span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">Trend</span>
+    <span class="legend-def">Тренд выручки за последний месяц относительно среднего за весь период. <span class="trend-growing">GROWING</span> &gt;1.2 · <span class="trend-stable">STABLE</span> 0.8–1.2 · <span class="trend-declining">DECLINING</span> &lt;0.8
+      <details><summary>как считается</summary><div>Берём revenue за 30 дней и сравниваем со средней месячной выручкой (12mo / 12). Если 30d заметно выше среднего, приложение растёт. Если ниже — замедляется. Молодые приложения (&lt;6 мес) почти всегда GROWING, т.к. у них мало исторических данных и первые месяцы обычно слабые. Это нормально, не баг.</div></details>
+    </span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">Accel.</span>
+    <span class="legend-def">Отношение 30d к средней месячной: &gt;1.5 = ускоряется, ~1.0 = стабильно, &lt;1.0 = теряет
+      <details><summary>формула + пример</summary><div>То же отношение, что в Trend, но числом. Формула: <code style="color: #60a5fa;">30d_rev / (12mo_rev / 12)</code>. Пример: приложение заработало $120K за год (= $10K/мес в среднем) и $25K за последний месяц. Accel = 25/10 = 2.5, т.е. последний месяц в 2.5 раза сильнее среднего. Accel 0.5 значит выручка упала вдвое от средней.</div></details>
+    </span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">Source</span>
+    <span class="legend-def"><span class="growth-app">APP</span> = органика ASO, <span class="growth-content">CONTENT</span> = аудитория, <span class="growth-hybrid">HYBRID</span> = оба. <span style="color: #64748b;">*Классификация на основе данных Sensor Tower, может быть неточной</span>
+      <details><summary>расшифровка каналов</summary><div>APP = органика App Store / ASO, CONTENT = YouTube/соцсети/блог приводят установки, HYBRID = оба канала.</div></details>
+    </span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">Mon.</span>
+    <span class="legend-def">SUB = подписка, FREE = нет IAP (web paywall?), SUB+ADS, ADS = реклама
+      <details><summary>расшифровка типов</summary><div>Модель монетизации: SUB = подписка, FREE = нет IAP в App Store (скорее всего web paywall, Stripe или B2B), SUB+ADS = подписка + реклама, ADS = только реклама</div></details>
+    </span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">RPD</span>
+    <span class="legend-def">Revenue Per Download. $50+ = скорее web paywall или аномалия ST</span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">DAU</span>
+    <span class="legend-def">Daily Active Users. «—» = данные недоступны (~30% приложений)</span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">Country</span>
+    <span class="legend-def">Рынок #1 по выручке. По ссылке на Sensor Tower можно увидеть топ-3 стран</span>
+  </div>
+  <div class="legend-row">
+    <span class="legend-term">Pub. Country</span>
+    <span class="legend-def">Страна регистрации паблишера. Часто налоговая юрисдикция, не реальное местоположение</span>
+  </div>
 </div>
 </div>
+
 <div style="background: #1e293b; border-radius: 8px; padding: 14px 20px; margin-bottom: 24px; border-left: 3px solid #a855f7;">
-<div style="color: #c084fc; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Типы паблишеров</div><div style="font-size: 0.78rem; color: #64748b; margin-bottom: 10px;">Авторская классификация на основе анализа App Store аккаунтов и портфолио паблишеров</div>
-<div style="font-size: 0.82rem; color: #94a3b8; line-height: 1.8;">
-<p><span class="type-indie" style="font-weight:600;">Indie</span> — независимый разработчик или небольшая команда (1–10 человек), без венчурного финансирования. Прямой конкурент, результат воспроизводим.</p>
-<p><span class="type-creator" style="font-weight:600;">Creator</span> — приложение на базе существующей аудитории (YouTube-блогер, фитнес-инфлюенсер, подкаст). Результат НЕ воспроизводим без этой аудитории.</p>
-<p><span class="type-studio" style="font-weight:600;">Studio</span> — крупная компания или серийный паблишер (10+ продуктов, видимая структура команды). Другой уровень ресурсов.</p>
-<p><span class="type-clone" style="font-weight:600;">Clone Farm</span> — паблишер с 20+ одинаковых шаблонных приложений, паттерн ASO-спама. Фильтруйте для честного анализа.</p>
+<div style="color: #c084fc; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Типы паблишеров</div>
+<div style="font-size: 0.78rem; color: #64748b; margin-bottom: 10px;">Авторская классификация на основе анализа App Store аккаунтов и портфолио паблишеров</div>
+<div class="type-cards">
+  <div class="type-card">
+    <div class="type-card-header">
+      <span class="type-indie" style="font-weight:700;">Indie</span>
+    </div>
+    <p>Независимый разработчик или небольшая команда (1–10 человек), без венчурного финансирования. Прямой конкурент, результат воспроизводим.</p>
+  </div>
+  <div class="type-card">
+    <div class="type-card-header">
+      <span class="type-creator" style="font-weight:700;">Creator</span>
+    </div>
+    <p>Приложение на базе существующей аудитории (YouTube-блогер, фитнес-инфлюенсер, подкаст). Результат НЕ воспроизводим без этой аудитории.</p>
+  </div>
+  <div class="type-card">
+    <div class="type-card-header">
+      <span class="type-studio" style="font-weight:700;">Studio</span>
+    </div>
+    <p>Крупная компания или серийный паблишер (10+ продуктов, видимая структура команды). Другой уровень ресурсов.</p>
+  </div>
+  <div class="type-card">
+    <div class="type-card-header">
+      <span class="type-clone" style="font-weight:700;">Clone Farm</span>
+    </div>
+    <p>Паблишер с 20+ одинаковых шаблонных приложений, паттерн ASO-спама. Фильтруйте для честного анализа.</p>
+  </div>
 </div>
 </div>
+
+</details>
 <div class="stats">
 <div class="stat-card"><div class="label">Приложения</div><div class="value">130</div></div>
 <div class="stat-card"><div class="label">Растут</div><div class="value green">108</div></div>
@@ -285,6 +376,11 @@ a:hover { text-decoration: underline; }
 </div>
 
 <script>
+// Legend panel localStorage persistence
+const lp = document.getElementById('legend-panel');
+if (localStorage.getItem('legendOpen') === 'false') lp.removeAttribute('open');
+lp.addEventListener('toggle', () => localStorage.setItem('legendOpen', lp.open));
+
 let sortCol = -1, sortAsc = true;
 document.querySelectorAll('th').forEach(th => {
   th.addEventListener('click', () => {
